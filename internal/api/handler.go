@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/ridvanuyn/messaging-system-gointernal/service"
-	"github.com/ridvanuyn/messaging-system-gointernal/worker"
+	"github.com/ridvanuyn/messaging-system-go/internal/service"
+	"github.com/ridvanuyn/messaging-system-go/internal/worker"
 )
 
 // Handler contains API handlers

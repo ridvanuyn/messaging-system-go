@@ -9,12 +9,14 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/ridvanuyn/messaging-system-gointernal/api"
-	"github.com/ridvanuyn/messaging-system-gointernal/config"
-	"github.com/ridvanuyn/messaging-system-gointernal/repository"
-	"github.com/ridvanuyn/messaging-system-gointernal/service"
-	"github.com/ridvanuyn/messaging-system-gointernal/worker"
-	"github.com/ridvanuyn/messaging-system-gopkg/database"
+	"github.com/ridvanuyn/messaging-system-go/internal/api"
+	"github.com/ridvanuyn/messaging-system-go/internal/config"
+	"github.com/ridvanuyn/messaging-system-go/internal/repository"
+	"github.com/ridvanuyn/messaging-system-go/internal/service"
+	"github.com/ridvanuyn/messaging-system-go/internal/worker"
+	"github.com/ridvanuyn/messaging-system-go/pkg/database"
+	_ "github.com/ridvanuyn/messaging-system-go/docs" 
+
 )
 
 // @title Messaging API

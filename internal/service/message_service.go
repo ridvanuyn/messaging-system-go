@@ -4,14 +4,15 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
+	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"time"
 
-	"github.com/ridvanuyn/messaging-system-gointernal/config"
-	"github.com/ridvanuyn/messaging-system-gointernal/domain"
-	"github.com/ridvanuyn/messaging-system-gointernal/repository"
+	"github.com/ridvanuyn/messaging-system-go/internal/config"
+	"github.com/ridvanuyn/messaging-system-go/internal/domain"
+	"github.com/ridvanuyn/messaging-system-go/internal/repository"
 )
 
 // MessageService defines the message operations
@@ -110,22 +111,34 @@ func (s *messageService) sendToWebhook(ctx context.Context, msg domain.Message) 
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("x-ins-auth-key", s.config.AuthKey)
 
+
 	resp, err := s.client.Do(req)
 	if err != nil {
 		return "", err
 	}
 	defer resp.Body.Close()
 
-	// Check for 202 Accepted
-	if resp.StatusCode != http.StatusAccepted {
-		return "", errors.New("webhook returned unexpected status code")
-	}
 
-	// Parse response
-	var response domain.MessageResponse
-	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Printf("Yanıt okuma hatası: %v", err)
 		return "", err
 	}
 
-	return response.MessageID, nil
+
+	log.Printf("Webhook yanıtı - Durum Kodu: %d, Başlıklar: %v, Gövde: %s", 
+		resp.StatusCode, resp.Header, string(bodyBytes))
+
+
+	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
+		// Başarılı durum için rastgele bir UUID oluştur
+		messageID := fmt.Sprintf("success-%d", time.Now().UnixNano())
+		log.Printf("Webhook başarılı kabul edildi - Durum Kodu: %d, Oluşturulan MessageID: %s", 
+			resp.StatusCode, messageID)
+		return messageID, nil
+	} else {
+		log.Printf("Webhook hatası: Durum kodu %d, URL: %s, İstek: %s",
+			resp.StatusCode, s.config.WebhookURL, string(jsonData))
+		return "", fmt.Errorf("webhook beklenmeyen durum kodu döndürdü: %d", resp.StatusCode)
+	}
 }

@@ -1,0 +1,139 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API for automatic message sending system",
+        "title": "Messaging API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api",
+    "paths": {
+        "/messages": {
+            "get": {
+                "description": "Get all sent messages from database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "messages"
+                ],
+                "summary": "List sent messages",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.Message"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/scheduler/start": {
+            "post": {
+                "description": "Start automatic message sending",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "scheduler"
+                ],
+                "summary": "Start message scheduler",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/scheduler/status": {
+            "get": {
+                "description": "Check if scheduler is currently running",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "scheduler"
+                ],
+                "summary": "Check scheduler status",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/scheduler/stop": {
+            "post": {
+                "description": "Stop automatic message sending",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "scheduler"
+                ],
+                "summary": "Stop message scheduler",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "domain.Message": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "message_id": {
+                    "type": "string"
+                },
+                "sent": {
+                    "type": "boolean"
+                },
+                "sent_at": {
+                    "type": "string"
+                },
+                "to": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

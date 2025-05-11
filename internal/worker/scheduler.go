@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ridvanuyn/messaging-system-gointernal/service"
+	"github.com/ridvanuyn/messaging-system-go/internal/service"
 )
 
 // Scheduler manages periodic message sending

@@ -1,0 +1,92 @@
+basePath: /api
+definitions:
+  domain.Message:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      message_id:
+        type: string
+      sent:
+        type: boolean
+      sent_at:
+        type: string
+      to:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API for automatic message sending system
+  title: Messaging API
+  version: "1.0"
+paths:
+  /messages:
+    get:
+      consumes:
+      - application/json
+      description: Get all sent messages from database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Message'
+            type: array
+      summary: List sent messages
+      tags:
+      - messages
+  /scheduler/start:
+    post:
+      consumes:
+      - application/json
+      description: Start automatic message sending
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Start message scheduler
+      tags:
+      - scheduler
+  /scheduler/status:
+    get:
+      consumes:
+      - application/json
+      description: Check if scheduler is currently running
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Check scheduler status
+      tags:
+      - scheduler
+  /scheduler/stop:
+    post:
+      consumes:
+      - application/json
+      description: Stop automatic message sending
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Stop message scheduler
+      tags:
+      - scheduler
+swagger: "2.0"

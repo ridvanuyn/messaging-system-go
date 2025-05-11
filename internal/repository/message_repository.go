@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v8"
-	"github.com/ridvanuyn/messaging-system-gointernal/domain"
+	"github.com/ridvanuyn/messaging-system-go/internal/domain"
 	"github.com/jmoiron/sqlx"
 )
 
