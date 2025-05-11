@@ -15,7 +15,6 @@ import (
 	"github.com/ridvanuyn/messaging-system-go/internal/repository"
 )
 
-// MessageService defines the message operations
 type MessageService interface {
 	SendMessages(ctx context.Context) error
 	GetSentMessages(ctx context.Context) ([]domain.Message, error)
@@ -28,7 +27,6 @@ type messageService struct {
 	batchSize int
 }
 
-// NewMessageService creates a new message service instance
 func NewMessageService(repo repository.MessageRepository, config *config.Config) MessageService {
 	return &messageService{
 		repo:      repo,
@@ -38,9 +36,7 @@ func NewMessageService(repo repository.MessageRepository, config *config.Config)
 	}
 }
 
-// SendMessages sends unsent messages
 func (s *messageService) SendMessages(ctx context.Context) error {
-	// Get unsent messages from database
 	messages, err := s.repo.GetUnsentMessages(ctx, s.batchSize)
 	if err != nil {
 		return err
@@ -50,7 +46,6 @@ func (s *messageService) SendMessages(ctx context.Context) error {
 		return nil
 	}
 
-	// For each message
 	for _, msg := range messages {
 		// Check content length
 		if len(msg.Content) > s.config.MaxContentLength {
@@ -83,12 +78,10 @@ func (s *messageService) SendMessages(ctx context.Context) error {
 	return nil
 }
 
-// GetSentMessages gets sent messages
 func (s *messageService) GetSentMessages(ctx context.Context) ([]domain.Message, error) {
 	return s.repo.GetSentMessages(ctx)
 }
 
-// sendToWebhook sends a message to the webhook
 func (s *messageService) sendToWebhook(ctx context.Context, msg domain.Message) (string, error) {
 	payload := struct {
 		To      string `json:"to"`
@@ -126,19 +119,18 @@ func (s *messageService) sendToWebhook(ctx context.Context, msg domain.Message) 
 	}
 
 
-	log.Printf("Webhook yanıtı - Durum Kodu: %d, Başlıklar: %v, Gövde: %s", 
+	log.Printf("Webhook Response - Status Code: %d, Headers: %v, Body: %s", 
 		resp.StatusCode, resp.Header, string(bodyBytes))
 
 
 	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
-		// Başarılı durum için rastgele bir UUID oluştur
 		messageID := fmt.Sprintf("success-%d", time.Now().UnixNano())
-		log.Printf("Webhook başarılı kabul edildi - Durum Kodu: %d, Oluşturulan MessageID: %s", 
+		log.Printf("Webhook Success! - Status Code: %d,  MessageID: %s", 
 			resp.StatusCode, messageID)
 		return messageID, nil
 	} else {
-		log.Printf("Webhook hatası: Durum kodu %d, URL: %s, İstek: %s",
+		log.Printf("Webhook Failiure: Status Code: %d, URL: %s, Request: %s",
 			resp.StatusCode, s.config.WebhookURL, string(jsonData))
-		return "", fmt.Errorf("webhook beklenmeyen durum kodu döndürdü: %d", resp.StatusCode)
+		return "", fmt.Errorf("Webhook returned unexpected status code: %d", resp.StatusCode)
 	}
 }

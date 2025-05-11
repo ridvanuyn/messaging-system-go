@@ -9,7 +9,6 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-// MessageRepository defines the message database operations
 type MessageRepository interface {
 	GetUnsentMessages(ctx context.Context, limit int) ([]domain.Message, error)
 	MarkAsSent(ctx context.Context, id int64, messageID string) error
@@ -22,7 +21,6 @@ type postgresMessageRepository struct {
 	redis *redis.Client
 }
 
-// NewMessageRepository creates a new message repository instance
 func NewMessageRepository(db *sqlx.DB, redis *redis.Client) MessageRepository {
 	return &postgresMessageRepository{
 		db:    db,
@@ -30,7 +28,6 @@ func NewMessageRepository(db *sqlx.DB, redis *redis.Client) MessageRepository {
 	}
 }
 
-// GetUnsentMessages gets unsent messages
 func (r *postgresMessageRepository) GetUnsentMessages(ctx context.Context, limit int) ([]domain.Message, error) {
 	var messages []domain.Message
 	query := `SELECT id, "to", content, sent, created_at FROM messages WHERE sent = false ORDER BY created_at LIMIT $1`
@@ -43,7 +40,6 @@ func (r *postgresMessageRepository) GetUnsentMessages(ctx context.Context, limit
 	return messages, nil
 }
 
-// MarkAsSent marks a message as sent
 func (r *postgresMessageRepository) MarkAsSent(ctx context.Context, id int64, messageID string) error {
 	query := `UPDATE messages SET sent = true, sent_at = NOW(), message_id = $1 WHERE id = $2`
 	
@@ -51,7 +47,6 @@ func (r *postgresMessageRepository) MarkAsSent(ctx context.Context, id int64, me
 	return err
 }
 
-// GetSentMessages gets sent messages
 func (r *postgresMessageRepository) GetSentMessages(ctx context.Context) ([]domain.Message, error) {
 	var messages []domain.Message
 	query := `SELECT id, "to", content, sent, created_at, sent_at, message_id FROM messages WHERE sent = true ORDER BY sent_at DESC`
@@ -64,7 +59,6 @@ func (r *postgresMessageRepository) GetSentMessages(ctx context.Context) ([]doma
 	return messages, nil
 }
 
-// CacheMessageID caches message ID to Redis
 func (r *postgresMessageRepository) CacheMessageID(ctx context.Context, messageID string, sentTime time.Time) error {
 	key := "message:" + messageID
 	value := sentTime.Format(time.RFC3339)

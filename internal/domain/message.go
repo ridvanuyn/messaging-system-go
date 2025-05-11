@@ -4,7 +4,6 @@ import (
 	"time"
 )
 
-// Message represents a message in the database
 type Message struct {
 	ID        int64     `json:"id" db:"id"`
 	To        string    `json:"to" db:"to"`
@@ -15,7 +14,6 @@ type Message struct {
 	MessageID string    `json:"message_id,omitempty" db:"message_id"`
 }
 
-// MessageResponse represents the response from the webhook site
 type MessageResponse struct {
 	Message   string `json:"message"`
 	MessageID string `json:"messageId"`

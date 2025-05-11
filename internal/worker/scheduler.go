@@ -78,14 +78,12 @@ func (s *Scheduler) Stop() bool {
 	return true
 }
 
-// IsRunning checks if the scheduler is running
 func (s *Scheduler) IsRunning() bool {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	return s.isRunning
 }
 
-// sendMessages triggers message sending
 func (s *Scheduler) sendMessages() {
 	log.Println("Sending messages...")
 	

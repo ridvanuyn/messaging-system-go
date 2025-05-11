@@ -5,7 +5,6 @@ import (
 	"strconv"
 )
 
-// Config holds the application configuration
 type Config struct {
 	Port             string
 	DbURL            string
@@ -15,7 +14,6 @@ type Config struct {
 	MaxContentLength int
 }
 
-// LoadConfig loads configuration from environment variables
 func LoadConfig() (*Config, error) {
 	maxContentLength, _ := strconv.Atoi(getEnvWithDefault("MAX_CONTENT_LENGTH", "160"))
 
@@ -29,7 +27,6 @@ func LoadConfig() (*Config, error) {
 	}, nil
 }
 
-// getEnvWithDefault gets environment variable with a default value
 func getEnvWithDefault(key, defaultValue string) string {
 	value := os.Getenv(key)
 	if value == "" {
